@@ -15,7 +15,6 @@ module tt_um_counter (
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
-
   reg [7:0] counter;
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin

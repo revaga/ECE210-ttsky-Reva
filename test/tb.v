@@ -27,12 +27,9 @@ module tb ();
   wire VGND = 1'b0;
 `endif
 
-  // Instantiate design (counter or picosoc) based on build define
-`ifdef PICOSOC
-  tt_um_picosoc user_project (
-`else
+  // Replace tt_um_example with your module name:
   tt_um_counter user_project (
-`endif
+
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
       .VPWR(VPWR),

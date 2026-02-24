@@ -6,22 +6,13 @@ SIM ?= icarus
 FST ?= -fst # Use more efficient FST format
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PICORV32_DIR = $(PWD)/../picorv32
-BUILD ?= picosoc
-export BUILD
+PROJECT_SOURCES = counter.v
 
 ifneq ($(GATES),yes)
 
 # RTL simulation:
 SIM_BUILD				= sim_build/rtl
-ifeq ($(BUILD),picosoc)
-COMPILE_ARGS += -DPICOSOC
-# Order matters: picosoc.v must be read before picorv32.v
-VERILOG_SOURCES += $(SRC_DIR)/simpleuart.v $(SRC_DIR)/spimemio.v $(SRC_DIR)/picosoc.v $(PICORV32_DIR)/picorv32.v $(SRC_DIR)/tt_um_picosoc.v
-else
-PROJECT_SOURCES = counter.v
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))
-endif
 
 else
 
