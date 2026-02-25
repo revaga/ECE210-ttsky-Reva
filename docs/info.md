@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-add up
-
+It takes input voltages and treats that as the input current injection to the LIF neuron
 ## How to test
 
-make
+do something??
 
 ## External hardware
 
 List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+N/A
