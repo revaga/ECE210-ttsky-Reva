@@ -6,9 +6,13 @@
 */
 module tb ();
 
-  // Dump the signals to a FST file. You can view it with gtkwave or surfer.
+  // Dump the signals. Use VCD for gate-level (CI uploads it); FST otherwise.
   initial begin
+`ifdef GL_TEST
+    $dumpfile("tb.vcd");
+`else
     $dumpfile("tb.fst");
+`endif
     $dumpvars(0, tb);
     #1;
   end
@@ -28,7 +32,7 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_counter user_project (
+  tt_um_lif user_project (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
