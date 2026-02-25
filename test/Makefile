@@ -6,10 +6,7 @@ SIM ?= icarus
 FST ?= -fst # Use more efficient FST format
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = tt_um_lif.v lif.v
-
-# Ensure results.xml is in test/ for CI (gl_test and test-summary read it from here)
-COCOTB_RESULTS_FILE = $(PWD)/results.xml
+PROJECT_SOURCES = counter.v
 
 ifneq ($(GATES),yes)
 
