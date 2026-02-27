@@ -15,25 +15,17 @@ module tt_um_lif (
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
-  // reg [7:0] counter;
-  // always @(posedge clk or negedge rst_n) begin
-  //   if (!rst_n) begin
-  //     counter <= 0;
-  //   end else begin
-  //     counter <= counter + 1;
-  //   end
-  // end
 
   // All output pins must be assigned. If not used, assign to 0.
-  //assign uo_out  = counter;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out [6:0] = 0;
   assign uio_oe = 1;
   //assign uio_oe  = 0;
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, uio_in, 1'b0};
+  wire _unused = &{ena, uio_in, 1'b0};
 
   //instantiate the lif neuron
   lif lif1 (.current(ui_in), .clk(clk), .reset_n(rst_n), .state(uo_out), .spike(uio_out[7]));
-
+  // lif lif2 (.current(uio_out[7]), .clk(clk), .reset_n(rst_n), .state(uo_out), .spike(uio_out[7]));
+ 
 endmodule
