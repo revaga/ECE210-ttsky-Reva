@@ -6,7 +6,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles, RisingEdge
 
 @cocotb.test()
-async def test_lif_behavior(dut):
+async def test_lif(dut):
     dut._log.info("Start")
 
     # Set the clock period to 10 us (100 KHz)
@@ -24,36 +24,34 @@ async def test_lif_behavior(dut):
 
     # iin > 100 to overcome 1/2 leak and hit 200 threshold for spiking
     dut.ui_in.value = 110 
-    
-    dut._log.info("Testing integration with input 110...")
-    for i in range(5):
-        await RisingEdge(dut.clk)
-        state_val = int(dut.uo_out.value)
-        dut._log.info(f"Cycle {i}: State = {state_val}")
-        
-    # test spiking
-    dut.ui_in.value = 255 # Max input to spike quicker
-    
+    n1_spike = False
 
-    max_cycles = 50
-    spike_detected = False
-    
-    for _ in range(max_cycles):
+    for i in range(10):
         await RisingEdge(dut.clk)
-        if int(dut.uio_out.value) & 0x80: # 0x80 is the 128 bit
-            spike_detected = True
-            dut._log.info(f"spike at {int(dut.uo_out.value)}")
+        if int(dut.uio_out.value) & 0x40: # 0x40 is the 64 bit
+            n1_spike = True
             break
-            
-    assert spike_detected, "no spike w/ 50 cycles"
 
-    # test leaking (w/ zero input)
+    assert n1_spike, "n1 did not spike"
+
+    await RisingEdge(dut.clk)
+    n2_state = int(dut.uo_out.value)
+
     dut.ui_in.value = 0
+    await ClockCycles(dut.clk, 5)
+    assert int(dut.uo_out.value) == 128, "n2 state changes"
+
+    dut.ui_in.value = 210
+    spike_detected = False
+    for _ in range(20):
+        await RisingEdge(dut.clk)
+        if int(dut.uio_out.value) & 0x80: # 0x40 is the 64 bit
+            spike_detected = True
+            break
+
+    assert spike_detected, "n2 did not spike"
+
     await RisingEdge(dut.clk)
-    pre_leak = int(dut.uo_out.value)
-    await RisingEdge(dut.clk)
-    post_leak = int(dut.uo_out.value)
-    
-    assert post_leak < pre_leak, "no decay with 0 input"
+    assert int(dut.uo_out.value) == 0, "n2 didn't reset after spiking"
 
     dut._log.info("yipee!!")
